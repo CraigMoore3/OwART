@@ -1,64 +1,110 @@
-// a simple game where you click to drop a ball and 
-// try to get as many balls as possible on the spinning shape
-// move the mouse up and down to change the rotation speed of the shape
-// use the right and left keys to make the shape larger or smaller
+let playerNode01, playerNode02, playerNode03;
+let width = 500;
+let height = 500;
 
-let spinningShape;
-let highScore = 0;
+function preload() {
+    cat = loadImage('assets/fabCat.png');
+    garage = loadImage('assets/garage.gif');
+    lever01 = loadSound('sound/lever_01.mp3');
+    lever01.playMode('untilDone');
+}
 
 function setup() {
-    let canvas = new Canvas("fullscreen");
+    let canvas = new Canvas(width, height);
+    textFont("Courier", 15);
+    noStroke();
+
+    playerNode01 = new Sprite(350,15,25,25);
+    playerNode01.color = 'black';
+    playerNode01.textColor = 'white';
+    playerNode01.text = '01';
+    playerNode01.drag = 3;
+    // playerNode01.layer = 2;
+
+    playerNode02 = new Sprite(250, 40, 25, 25);
+    playerNode02.color = 'black';
+    playerNode02.textColor = 'white';
+    playerNode02.text = '02';
+    playerNode02.drag = 3;
+
+    sensor = new Sprite(450,465);
+    sensor.color = 'orange';
+    sensor.width = 25;
+    sensor.height= 50;
+    sensor.collider = 'static';
+
+    nodeCheck = new Sprite(450, 465, 50, 75);
+    nodeCheck.layer = 1;
+    nodeCheck.collider = 'none'
+    nodeCheck.strokeWeight = 0;
+    let empty = color(0,0);
+    nodeCheck.color = empty;
+
+    Lwall = new Sprite (425, 455, 15, 105);
+    Lwall.color = "white";
+    Lwall.collider = 'static';
+    Rwall = new Sprite (475, 455, 15, 105);
+    Rwall.color = "white";
+    Rwall.collider = 'static';
+
+    
+    let Ldummy = new Sprite(0,0,25,1000);
+    Ldummy.color = 'white';
+    let Rdummy = new Sprite(500,0,25,1000);
+    Rdummy.color = 'white';
+    let Tdummy = new Sprite(0,0,1000,25);
+    Tdummy.color = 'white';
+    let Bdummy = new Sprite(0,500,1000,25);
+    Bdummy.color = 'white';
+    Ldummy.collider = 'static;'
+    Rdummy.collider = 'static'
+    Tdummy.collider = 'static'
+    Bdummy.collider = 'static'
 
     world.gravity.y = 10;
-
     // this sprite can be created on a single line, but it's easier to read this way:
-	spinningShape = new Sprite();
-	spinningShape.width = canvas.width/5;
-	spinningShape.height = spinningShape.width;
-    spinningShape.collider = "kinematic";
-
-    textFont("Courier", 24);
+	// spinningShape = new Sprite();
+	// spinningShape.width = canvas.width/5;
+	// spinningShape.height = spinningShape.width;
+    // spinningShape.collider = "kinematic";
 }
 
 function draw() {
-
-    // try the game without this line :)
     clear();
+    background('blue');
+    fill("white");
+    text('Old World Analysis and Reconstruction Team', 50, height/10);
+    
 
-    // the map function translates a value from one range to another
-    // https://p5js.org/reference/#/p5/map
-    spinningShape.rotationSpeed = map(mouse.y, 0, canvas.height, -10, 10);
 
-    // create a ball when the mouse is clicked
-    // https://p5play.org/learn/input_devices.html
-    if (mouse.presses()) {
-        let ball = new Sprite(mouse.x, -20, 20);
-        // make the ball resist rolling when it touches the spinning shape
-        // https://p5play.org/learn/sprite.html?page=9
-        ball.rotationDrag = 10;
+    if (playerNode01.mouse.hovering()) mouse.cursor = 'grab';
+    else mouse.cursor = 'default';
+
+    if (playerNode01.mouse.dragging()) {
+        playerNode01.moveTowards(mouse.x + playerNode01.mouse.x, mouse.y + playerNode01.mouse.y, 1);
+        lever01.play();
     }
 
-    // make the spinning shape larger or smaller using the keyboard
-    // note the difference between presses (above) and pressing (here)
-    if (kb.pressing('right')) {
-        spinningShape.width += 10;
-    } else if (kb.pressing('left')) {
-        spinningShape.width -= 10;
+    if (playerNode01.overlapping(nodeCheck) > 3) {
+        image(cat,125,125,250,250);
+       
     }
 
-    // loop through the allSprites array and see how many are above the center of the screen
-    let currentScore = 0;
-    for (let sprite of allSprites) {
-        if (sprite.y < canvas.height/2) {
-            currentScore++;
-            if (currentScore > highScore) {
-                highScore = currentScore;
-            }
-        }
+    if (playerNode02.mouse.hovering()) mouse.cursor = 'grab';
+    else mouse.cursor = 'default';
+
+    if (playerNode02.mouse.dragging()) {
+        playerNode02.moveTowards(mouse.x + playerNode02.mouse.x, mouse.y + playerNode02.mouse.y, 1)
     }
 
-    // display the score (minus 1 so it doesn't count the spinning shape)
-    text("BALLS: " + (currentScore-1), 40, 60);
-    text("HIGH:  " + (highScore-1), 40, 86);
-
+    if (playerNode02.overlapping(nodeCheck) > 3) {
+        image(garage,125,125,250,250);
+    }
 }
+
+
+
+
+// Sound
+// Lever
+// https://freesound.org/people/A_Kuha/sounds/676412/
