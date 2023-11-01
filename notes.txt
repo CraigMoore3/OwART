@@ -1,0 +1,17 @@
+Character Select
+---
+The Fox: 
+    - Cunning and Unpredictable
+    - Would gnaw its own foot off to escape capture
+
+The Brain:
+    - Lovely place to build a home
+
+The Camera:
+    - Creates reality
+
+
+Unlockables:
+    Clock (busted, pay for repairs)
+    Extract (destroy images for power)
+
