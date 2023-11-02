@@ -15,11 +15,13 @@
 let playerNode01, playerNode02, playerNode03, deNoiseBtn;
 let presses = 0;
 let catLoad = false;
-let width = 1000;
-let height = 750;
+let width = 1680;
+let height = 1050;
 let borderWidth = width*2;
 let borderHeight = height*2;
 // let imgLoc = (575, 65, 350, 350);
+
+// ---------------------------------------- //
 
 function preload() {
     fullCat = loadImage('assets/fabCat.png');
@@ -32,6 +34,8 @@ function preload() {
     lever01.playMode('untilDone');
 }
 
+// ---------------------------------------- //
+
 function setup() {
     let canvas = new Canvas(width, height);
     textFont("Courier", 15);
@@ -40,6 +44,7 @@ function setup() {
     world.gravity.y = 10;
 }
 
+// ---------------------------------------- //
 
 function draw() {
     clear();
@@ -93,6 +98,8 @@ function draw() {
     }
 
 }
+
+// ---------------------------------------- //
 
 function gameLoad() {
 
@@ -175,10 +182,12 @@ function gameLoad() {
     let borderB2 = new Sprite(0, 750, borderWidth, 12);
     borderB2.color = 'white';
     borderB2.collider = 'static';
-    
+
     // this sprite can be created on a single line, but it's easier to read this way:
 	// spinningShape = new Sprite();
 	// spinningShape.width = canvas.width/5;
 	// spinningShape.height = spinningShape.width;
     // spinningShape.collider = "kinematic";
 }
+
+// ---------------------------------------- //
