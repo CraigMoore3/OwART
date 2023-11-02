@@ -29,7 +29,41 @@ function preload() {
     cat02 = loadImage('assets/fabCat02.gif');
     cat03 = loadImage('assets/fabCat03.gif');
     cat04 = loadImage('assets/fabCat04.gif');
+
     garage = loadImage('assets/garage.gif');
+    
+    anhop01 = loadImage('assets/anhop01.gif');
+
+    bathouse01 = loadImage('assets/bathouse01.gif');
+
+    binoc01 = loadImage('assets/binoc01.gif');
+
+    books01 = loadImage('assets/books01.gif');
+
+    cabin01 = loadImage('assets/cabin01.gif');
+
+    dome01 = loadImage('assets/dome01.gif');
+
+    eagles01 = loadImage('assets/eagles01.gif');
+
+    fetti01 = loadImage('assets/fetti01.gif');
+
+    fish01 = loadImage('assets/fish01.gif');
+
+    kingfisher01 = loadImage('assets/kingfisher01.gif');
+
+    nightDrive01 = loadImage('assets/nightDrive01.gif');
+
+    projx01 = loadImage('assets/projx01.gif');
+
+    river01 = loadImage('assets/river01.gif');
+
+    // runner01 loadImage('assets/runner01.gif');
+
+    takeoff01 = loadImage('assets/takeoff01.gif');
+
+    tarpon01 = loadImage('assets/tarpon01.gif');
+
     lever01 = loadSound('sound/lever_01.mp3');
     lever01.playMode('untilDone');
 }
@@ -53,9 +87,10 @@ function draw() {
     rect();
     fill('white');
     text('> Old World Analysis and Reconstruction Team', 50, 550);
-    
+
+
     // Mouse Cursor
-    if (playerNode01.mouse.hovering() || playerNode02.mouse.hovering() || deNoiseBtn.mouse.hovering()) mouse.cursor = 'grab';
+    if (playerNode01.mouse.hovering() || playerNode02.mouse.hovering() || playerNode03.mouse.hovering() || deNoiseBtn.mouse.hovering()) mouse.cursor = 'grab';
     else {mouse.cursor = 'default';}
   
 
@@ -65,9 +100,9 @@ function draw() {
         // lever01.play();
     }
 
+
     if (playerNode01.overlapping(nodeCheck) > 3) {
         image(cat01,575, 65, 350, 350);
-        catLoad = true;
     } if (playerNode01.overlapping(nodeCheck) > 3 && presses >= 1) {
         image(cat02,575,65,350,350);
     } if (playerNode01.overlapping(nodeCheck) > 3 && presses >= 2) {
@@ -84,6 +119,16 @@ function draw() {
     if (playerNode02.overlapping(nodeCheck) > 3) {
         image(garage,575, 65, 350, 350);
     }
+
+
+    // Data Node 03
+    if (playerNode03.mouse.dragging()) {
+        playerNode03.moveTowards(mouse.x + playerNode03.mouse.x, mouse.y + playerNode03.mouse.y, 1)
+    }
+    if (playerNode03.overlapping(nodeCheck) > 3) {
+        image(takeoff01, 575, 65, 350, 350)
+    } 
+
 
     // deNoise Button
     if (deNoiseBtn.mouse.pressing() > 1 && deNoiseBtn.mouse.pressing() < 3) {
@@ -117,6 +162,13 @@ function gameLoad() {
     playerNode02.textColor = 'white';
     playerNode02.text = '02';
     playerNode02.drag = 3;
+
+    // Data Node 03 - Takeoff
+    playerNode03 = new Sprite(255, 25, 25);
+    playerNode03.color = 'blue';
+    playerNode03.textColor = 'white';
+    playerNode03.text = '03';
+    playerNode03.drag = 3;
 
     // Red "Sensor" - visual only
     sensor = new Sprite(450,465);
