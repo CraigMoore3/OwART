@@ -15,3 +15,15 @@ Unlockables:
     Clock (busted, pay for repairs)
     Extract (destroy images for power)
 
+Influences:
+    Papers, Please
+        Emotional Interface
+        Actively writing history through access 
+    Immortality
+        Media archivism
+        Gameplay loop of tagging, investigating
+        Haunted Media
+    Little Inferno
+        Emotional Interface
+        Point-and-Drag Gameplay
+        Great animation and sound design
