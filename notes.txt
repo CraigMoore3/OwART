@@ -31,6 +31,16 @@ Influences:
 
 Array
 
+    let img0 = new Array [
+        anhop00,
+        anhop01,
+        anhop02
+    ]
+
+    for (let i = 0; i < img0.length; i++) {
+        const img = img0[i];
+    }
+
 playerNode00 -  Animal Hospital
                 Img00
                 Img01

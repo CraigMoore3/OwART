@@ -15,8 +15,8 @@
 let playerNode01, playerNode02, playerNode03, deNoiseBtn;
 let presses = 0;
 let catLoad = false;
-let width = 1920;
-let height = 1080;
+let width = 1914;
+let height = 1074;
 let borderWidth = width*2;
 let borderHeight = height*2;
 // let imgLoc = (575, 65, 350, 350);
@@ -81,6 +81,8 @@ function setup() {
 // ---------------------------------------- //
 
 function draw() {
+
+    // Standard p5
     clear();
     background('black');
     fill('red');
@@ -88,17 +90,38 @@ function draw() {
     fill('white');
     text('> Old World Analysis and Reconstruction Team', 50, 550);
 
-
+    
     // Mouse Cursor
     if (playerNodes.mouse.hovering() || deNoiseBtn.mouse.hovering()) mouse.cursor = 'grab';
     else {mouse.cursor = 'default';}
-  
+
+
+    // deNoise Button
+    if (deNoiseBtn.mouse.pressing() > 1 && deNoiseBtn.mouse.pressing() < 3) {
+        presses++;
+        deNoiseBtn.x = 750;
+        deNoiseBtn.y = 450;
+        deNoiseBtn.color = 'maroon';
+    } else { 
+        deNoiseBtn.x = 752; 
+        deNoiseBtn.y = 448; 
+        deNoiseBtn.color = 'red';
+    }
+
+
+    // Mouse Interaction
     for (let i = 0; i < playerNodes.length; i++) {
         const node = playerNodes[i];
         if (node.mouse.dragging()) {
             node.moveTowards(mouse.x + node.mouse.x, mouse.y + node.mouse.y, 1);
         }
     }
+
+    if (playerNodes[0].overlapping(nodeCheck) > 3) {
+      let catPic = image(cat01,575, 65, 350, 350);
+    }
+
+    
     
     // if (playerNodes.mouse.dragging()) {
     //     playerNodes.moveTowards(mouse.x + playerNodes.mouse.x, mouse.y + playerNodes.mouse.y);
@@ -122,35 +145,8 @@ function draw() {
     // }
 
 
-    // // Data Node 02
-    // if (playerNode02.mouse.dragging()) {
-    //     playerNode02.moveTowards(mouse.x + playerNode02.mouse.x, mouse.y + playerNode02.mouse.y, 1)
-    // }
-    // if (playerNode02.overlapping(nodeCheck) > 3) {
-    //     image(garage,575, 65, 350, 350);
-    // }
 
-
-    // // Data Node 03
-    // if (playerNode03.mouse.dragging()) {
-    //     playerNode03.moveTowards(mouse.x + playerNode03.mouse.x, mouse.y + playerNode03.mouse.y, 1)
-    // }
-    // if (playerNode03.overlapping(nodeCheck) > 3) {
-    //     image(takeoff01, 575, 65, 350, 350)
-    // } 
-
-
-    // deNoise Button
-    if (deNoiseBtn.mouse.pressing() > 1 && deNoiseBtn.mouse.pressing() < 3) {
-        presses++;
-        deNoiseBtn.x = 750;
-        deNoiseBtn.y = 450;
-        deNoiseBtn.color = 'maroon';
-    } else { 
-        deNoiseBtn.x = 752; 
-        deNoiseBtn.y = 448; 
-        deNoiseBtn.color = 'red';
-    }
+    
 
 }
 
@@ -170,6 +166,8 @@ function gameLoad() {
         node.textColor = 'white';
         node.text = playerNodes.length - 1;
     }
+
+    
     
 
     // Data Node 01 - Fab Cat
@@ -210,6 +208,18 @@ function gameLoad() {
     nodeCheck.color = empty;
     
     // Sensor walls
+    // 'nodeCheck', 'sensor', 'Lwall', 'Rwall', 'Bwall'
+    // sensor = new Group();
+    // sensor.length = 5;
+    // let lwal
+    // sensor.color = 'white';
+    // sensor[1].color = 'red';
+    // sensor.collider = 'static';
+    
+    // while (sensor.length < 5) {
+    //     let
+    // }
+    
     Lwall = new Sprite (425, 455, 15, 100);
     Lwall.color = "white";
     Lwall.collider = 'static';
@@ -239,25 +249,22 @@ function gameLoad() {
     borderR1.color = 'white';
     borderR1.collider = 'static'
 
-    // Rightmost border
-    let borderR2 = new Sprite (width, 0, 12, borderHeight);
-    borderR2.color = 'white';
-    borderR2.collider = 'static'
+    
 
     // Top border
-    let borderT = new Sprite(0, 0, borderWidth, 12);
-    borderT.color = 'white';
-    borderT.collider = 'static'
+    // let borderT = new Sprite(0, 0, borderWidth, 12);
+    // borderT.color = 'white';
+    // borderT.collider = 'static'
 
-    // Bottom border 1
-    let borderB1 = new Sprite(0, 500, borderWidth, 12);
-    borderB1.color = 'white';
-    borderB1.collider = 'static'
+    // // Bottom border 1
+    // let borderB1 = new Sprite(0, 500, borderWidth, 12);
+    // borderB1.color = 'white';
+    // borderB1.collider = 'static'
 
-    // Bottom border 2
-    let borderB2 = new Sprite(0, 750, borderWidth, 12);
-    borderB2.color = 'white';
-    borderB2.collider = 'static';
+    // // Bottom border 2
+    // let borderB2 = new Sprite(0, 750, borderWidth, 12);
+    // borderB2.color = 'white';
+    // borderB2.collider = 'static';
 
     // this sprite can be created on a single line, but it's easier to read this way:
 	// spinningShape = new Sprite();
