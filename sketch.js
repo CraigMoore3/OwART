@@ -15,8 +15,8 @@
 let playerNode01, playerNode02, playerNode03, deNoiseBtn;
 let presses = 0;
 let catLoad = false;
-let width = 1680;
-let height = 1050;
+let width = 1920;
+let height = 1080;
 let borderWidth = width*2;
 let borderHeight = height*2;
 // let imgLoc = (575, 65, 350, 350);
@@ -90,44 +90,54 @@ function draw() {
 
 
     // Mouse Cursor
-    if (playerNode01.mouse.hovering() || playerNode02.mouse.hovering() || playerNode03.mouse.hovering() || deNoiseBtn.mouse.hovering()) mouse.cursor = 'grab';
+    if (playerNodes.mouse.hovering() || deNoiseBtn.mouse.hovering()) mouse.cursor = 'grab';
     else {mouse.cursor = 'default';}
   
+    for (let i = 0; i < playerNodes.length; i++) {
+        const node = playerNodes[i];
+        if (node.mouse.dragging()) {
+            node.moveTowards(mouse.x + node.mouse.x, mouse.y + node.mouse.y, 1);
+        }
+    }
+    
+    // if (playerNodes.mouse.dragging()) {
+    //     playerNodes.moveTowards(mouse.x + playerNodes.mouse.x, mouse.y + playerNodes.mouse.y);
+    // }
 
     // Data Node 01
-    if (playerNode01.mouse.dragging()) {
-        playerNode01.moveTowards(mouse.x + playerNode01.mouse.x, mouse.y + playerNode01.mouse.y, 1);
-        // lever01.play();
-    }
+    // if (playerNode01.mouse.dragging()) {
+    //     playerNode01.moveTowards(mouse.x + playerNode01.mouse.x, mouse.y + playerNode01.mouse.y, 1);
+    //     // lever01.play();
+    // }
 
 
-    if (playerNode01.overlapping(nodeCheck) > 3) {
-        image(cat01,575, 65, 350, 350);
-    } if (playerNode01.overlapping(nodeCheck) > 3 && presses >= 1) {
-        image(cat02,575,65,350,350);
-    } if (playerNode01.overlapping(nodeCheck) > 3 && presses >= 2) {
-        image(cat03,575,65,350,350);
-    } if (playerNode01.overlapping(nodeCheck) > 3 && presses >= 3) {
-        image(cat04,575,65,350,350);
-    }
+    // if (playerNode01.overlapping(nodeCheck) > 3) {
+    //     image(cat01,575, 65, 350, 350);
+    // } if (playerNode01.overlapping(nodeCheck) > 3 && presses >= 1) {
+    //     image(cat02,575,65,350,350);
+    // } if (playerNode01.overlapping(nodeCheck) > 3 && presses >= 2) {
+    //     image(cat03,575,65,350,350);
+    // } if (playerNode01.overlapping(nodeCheck) > 3 && presses >= 3) {
+    //     image(cat04,575,65,350,350);
+    // }
 
 
-    // Data Node 02
-    if (playerNode02.mouse.dragging()) {
-        playerNode02.moveTowards(mouse.x + playerNode02.mouse.x, mouse.y + playerNode02.mouse.y, 1)
-    }
-    if (playerNode02.overlapping(nodeCheck) > 3) {
-        image(garage,575, 65, 350, 350);
-    }
+    // // Data Node 02
+    // if (playerNode02.mouse.dragging()) {
+    //     playerNode02.moveTowards(mouse.x + playerNode02.mouse.x, mouse.y + playerNode02.mouse.y, 1)
+    // }
+    // if (playerNode02.overlapping(nodeCheck) > 3) {
+    //     image(garage,575, 65, 350, 350);
+    // }
 
 
-    // Data Node 03
-    if (playerNode03.mouse.dragging()) {
-        playerNode03.moveTowards(mouse.x + playerNode03.mouse.x, mouse.y + playerNode03.mouse.y, 1)
-    }
-    if (playerNode03.overlapping(nodeCheck) > 3) {
-        image(takeoff01, 575, 65, 350, 350)
-    } 
+    // // Data Node 03
+    // if (playerNode03.mouse.dragging()) {
+    //     playerNode03.moveTowards(mouse.x + playerNode03.mouse.x, mouse.y + playerNode03.mouse.y, 1)
+    // }
+    // if (playerNode03.overlapping(nodeCheck) > 3) {
+    //     image(takeoff01, 575, 65, 350, 350)
+    // } 
 
 
     // deNoise Button
@@ -148,27 +158,41 @@ function draw() {
 
 function gameLoad() {
 
+    playerNodes = new Group();
+    playerNodes.diameter = 25;
+    playerNodes.color = 'blue';
+    playerNodes.drag = 5;
+    
+    while (playerNodes.length < 18) {
+        let node = new playerNodes.Sprite();
+        node.x = playerNodes.length * 5;
+        node.y = 5;
+        node.textColor = 'white';
+        node.text = playerNodes.length - 1;
+    }
+    
+
     // Data Node 01 - Fab Cat
-    playerNode01 = new Sprite(350,25,25);
-    playerNode01.color = 'blue';
-    playerNode01.textColor = 'white';
-    playerNode01.text = '01';
-    playerNode01.drag = 3;
+    // playerNode01 = new Sprite(350,25,25);
+    // playerNode01.color = 'blue';
+    // playerNode01.textColor = 'white';
+    // playerNode01.text = '01';
+    // playerNode01.drag = 3;
     // playerNode01.layer = 2;
 
     // Data Node 02 - Garage
-    playerNode02 = new Sprite(250, 25, 25);
-    playerNode02.color = 'blue';
-    playerNode02.textColor = 'white';
-    playerNode02.text = '02';
-    playerNode02.drag = 3;
+    // playerNode02 = new Sprite(250, 25, 25);
+    // playerNode02.color = 'blue';
+    // playerNode02.textColor = 'white';
+    // playerNode02.text = '02';
+    // playerNode02.drag = 3;
 
     // Data Node 03 - Takeoff
-    playerNode03 = new Sprite(255, 25, 25);
-    playerNode03.color = 'blue';
-    playerNode03.textColor = 'white';
-    playerNode03.text = '03';
-    playerNode03.drag = 3;
+    // playerNode03 = new Sprite(255, 25, 25);
+    // playerNode03.color = 'blue';
+    // playerNode03.textColor = 'white';
+    // playerNode03.text = '03';
+    // playerNode03.drag = 3;
 
     // Red "Sensor" - visual only
     sensor = new Sprite(450,465);
