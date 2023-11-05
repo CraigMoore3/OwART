@@ -30,40 +30,7 @@ function preload() {
     cat03 = loadImage('assets/fabCat03.gif');
     cat04 = loadImage('assets/fabCat04.gif');
 
-    garage = loadImage('assets/garage.gif');
-    
-    anhop01 = loadImage('assets/anhop01.gif');
-
-    bathouse01 = loadImage('assets/bathouse01.gif');
-
-    binoc01 = loadImage('assets/binoc01.gif');
-
-    books01 = loadImage('assets/books01.gif');
-
-    cabin01 = loadImage('assets/cabin01.gif');
-
-    dome01 = loadImage('assets/dome01.gif');
-
-    eagles01 = loadImage('assets/eagles01.gif');
-
-    fetti01 = loadImage('assets/fetti01.gif');
-
-    fish01 = loadImage('assets/fish01.gif');
-
-    kingfisher01 = loadImage('assets/kingfisher01.gif');
-
-    nightDrive01 = loadImage('assets/nightDrive01.gif');
-
-    projx01 = loadImage('assets/projx01.gif');
-
-    river01 = loadImage('assets/river01.gif');
-
-    // runner01 loadImage('assets/runner01.gif');
-
-    takeoff01 = loadImage('assets/takeoff01.gif');
-
-    tarpon01 = loadImage('assets/tarpon01.gif');
-
+    catPics = [cat01, cat02, cat03, cat04];
     lever01 = loadSound('sound/lever_01.mp3');
     lever01.playMode('untilDone');
 }
@@ -112,6 +79,7 @@ function draw() {
     // Mouse Interaction
     for (let i = 0; i < playerNodes.length; i++) {
         const node = playerNodes[i];
+        
         if (node.mouse.dragging()) {
             node.moveTowards(mouse.x + node.mouse.x, mouse.y + node.mouse.y, 1);
         }
@@ -120,6 +88,18 @@ function draw() {
     if (playerNodes[0].overlapping(nodeCheck) > 3) {
       let catPic = image(cat01,575, 65, 350, 350);
     }
+
+
+
+    // ----------------------- //
+        // for (let i = 0; i < otherNodes.length; i++) {
+        //     const otherNode = otherNodes[i];
+        // }
+
+        // if (otherNode.mouse.dragging()) {
+        //     otherNode.moveTowards(mouse.x + otherNode.mouse.x, mouse.y + otherNode.mouse.y, 1);
+        // }
+    // ----------------------- //
 
     
     
@@ -133,7 +113,6 @@ function draw() {
     //     // lever01.play();
     // }
 
-
     // if (playerNode01.overlapping(nodeCheck) > 3) {
     //     image(cat01,575, 65, 350, 350);
     // } if (playerNode01.overlapping(nodeCheck) > 3 && presses >= 1) {
@@ -143,11 +122,6 @@ function draw() {
     // } if (playerNode01.overlapping(nodeCheck) > 3 && presses >= 3) {
     //     image(cat04,575,65,350,350);
     // }
-
-
-
-    
-
 }
 
 // ---------------------------------------- //
@@ -167,7 +141,16 @@ function gameLoad() {
         node.text = playerNodes.length - 1;
     }
 
-    
+    otherNodes = new Group();
+    otherNodes.width = 15;
+    otherNodes.height = 18;
+    otherNodes.color = 'orange';
+
+    while (otherNodes.length < 10) {
+        let node = new otherNodes.Sprite();
+        node.x = ( (otherNodes.length * 20) + 200 )
+        node.y = 40;
+    }
     
 
     // Data Node 01 - Fab Cat
@@ -257,9 +240,9 @@ function gameLoad() {
     // borderT.collider = 'static'
 
     // // Bottom border 1
-    // let borderB1 = new Sprite(0, 500, borderWidth, 12);
-    // borderB1.color = 'white';
-    // borderB1.collider = 'static'
+    let borderB1 = new Sprite(0, 500, borderWidth, 12);
+    borderB1.color = 'white';
+    borderB1.collider = 'static'
 
     // // Bottom border 2
     // let borderB2 = new Sprite(0, 750, borderWidth, 12);
