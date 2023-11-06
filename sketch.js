@@ -10,29 +10,50 @@
 // https://freesound.org/people/A_Kuha/sounds/676412/
 // ---------------------------------------------------
 
+// individual_sprite.pics[0] // or 1 or 2
 
 // --- Globals ---
-let playerNode01, playerNode02, playerNode03, deNoiseBtn;
+let activate, deNoiseBtn;
 let presses = 0;
 let catLoad = false;
 let width = 1914;
 let height = 1074;
 let borderWidth = width*2;
 let borderHeight = height*2;
+let playerNodes;
 // let imgLoc = (575, 65, 350, 350);
 
 // ---------------------------------------- //
 
 function preload() {
-    fullCat = loadImage('assets/fabCat.png');
-    cat01 = loadImage('assets/fabCat01.gif');
-    cat02 = loadImage('assets/fabCat02.gif');
-    cat03 = loadImage('assets/fabCat03.gif');
-    cat04 = loadImage('assets/fabCat04.gif');
+// 0_1.gif
+// 
+    
+    playerNodes = new Group();
+    playerNodes.diameter = 25;
+    playerNodes.color = 'blue';
+    playerNodes.drag = 5;
+    
+    //Class, properties, methods
+    for (let i = 0; i < 17; i++) {
+        let node = new playerNodes.Sprite();
+        node.x = playerNodes.length * 5;
+        node.y = 5;
+        node.textColor = 'white';
+        node.text = playerNodes.length - 1;
+        node.pics = [];
+        node.pics[0] = loadImage('assets/' + i + '_0.gif');
+        node.pics[1] = loadImage('assets/' + i + '_1.gif');
+        node.pics[2] = loadImage('assets/' + i + '_2.gif');
+    }
 
-    catPics = [cat01, cat02, cat03, cat04];
+
+    // catPics = [cat01, cat02, cat03];
+
     lever01 = loadSound('sound/lever_01.mp3');
     lever01.playMode('untilDone');
+
+
 }
 
 // ---------------------------------------- //
@@ -43,6 +64,8 @@ function setup() {
     noStroke();
     gameLoad();
     world.gravity.y = 10;
+
+   
 }
 
 // ---------------------------------------- //
@@ -56,7 +79,8 @@ function draw() {
     rect();
     fill('white');
     text('> Old World Analysis and Reconstruction Team', 50, 550);
-
+    text(presses, 50, 150);
+    text(activate,50, 165);
     
     // Mouse Cursor
     if (playerNodes.mouse.hovering() || deNoiseBtn.mouse.hovering()) mouse.cursor = 'grab';
@@ -64,12 +88,12 @@ function draw() {
 
 
     // deNoise Button
-    if (deNoiseBtn.mouse.pressing() > 1 && deNoiseBtn.mouse.pressing() < 3) {
+    if (deNoiseBtn.mouse.pressing() > 1 && deNoiseBtn.mouse.pressing() < 3 && activate) {
         presses++;
         deNoiseBtn.x = 750;
         deNoiseBtn.y = 450;
         deNoiseBtn.color = 'maroon';
-    } else { 
+    } else {
         deNoiseBtn.x = 752; 
         deNoiseBtn.y = 448; 
         deNoiseBtn.color = 'red';
@@ -85,9 +109,33 @@ function draw() {
         }
     }
 
-    if (playerNodes[0].overlapping(nodeCheck) > 3) {
-      let catPic = image(cat01,575, 65, 350, 350);
+   
+
+    for (let i = 0; i < playerNodes.length; i++) {
+    //   const activeNode = playerNodes[i];
+        text(activeNode, 50, 175);
+        if (activate && presses < 1) {
+                image(playerNodes[3].pics[0], 575, 65, 350, 350);
+          } if (activate && presses == 1) {
+              image(playerNodes[3].pics[1],575, 65, 350, 350);
+          } if (activate && presses >= 2) {
+              image(playerNodes[3].pics[2],575, 65, 350, 350);
+          }
+
+          if (playerNodes.overlapping(nodeCheck) > 3) {
+            activate = true;
+            
+            console.log("overlapping");
+        } else { 
+            activate = false;
+            presses = 0;
+        }
+
     }
+
+    
+
+    
 
 
 
@@ -127,53 +175,7 @@ function draw() {
 // ---------------------------------------- //
 
 function gameLoad() {
-
-    playerNodes = new Group();
-    playerNodes.diameter = 25;
-    playerNodes.color = 'blue';
-    playerNodes.drag = 5;
-    
-    while (playerNodes.length < 18) {
-        let node = new playerNodes.Sprite();
-        node.x = playerNodes.length * 5;
-        node.y = 5;
-        node.textColor = 'white';
-        node.text = playerNodes.length - 1;
-    }
-
-    otherNodes = new Group();
-    otherNodes.width = 15;
-    otherNodes.height = 18;
-    otherNodes.color = 'orange';
-
-    while (otherNodes.length < 10) {
-        let node = new otherNodes.Sprite();
-        node.x = ( (otherNodes.length * 20) + 200 )
-        node.y = 40;
-    }
-    
-
-    // Data Node 01 - Fab Cat
-    // playerNode01 = new Sprite(350,25,25);
-    // playerNode01.color = 'blue';
-    // playerNode01.textColor = 'white';
-    // playerNode01.text = '01';
-    // playerNode01.drag = 3;
-    // playerNode01.layer = 2;
-
-    // Data Node 02 - Garage
-    // playerNode02 = new Sprite(250, 25, 25);
-    // playerNode02.color = 'blue';
-    // playerNode02.textColor = 'white';
-    // playerNode02.text = '02';
-    // playerNode02.drag = 3;
-
-    // Data Node 03 - Takeoff
-    // playerNode03 = new Sprite(255, 25, 25);
-    // playerNode03.color = 'blue';
-    // playerNode03.textColor = 'white';
-    // playerNode03.text = '03';
-    // playerNode03.drag = 3;
+//  Capital letter = class
 
     // Red "Sensor" - visual only
     sensor = new Sprite(450,465);
@@ -190,6 +192,13 @@ function gameLoad() {
     let empty = color(0,0);
     nodeCheck.color = empty;
     
+    Lwall = new Sprite (425, 455, 15, 100);
+    Lwall.color = "white";
+    Lwall.collider = 'static';
+    Rwall = new Sprite (475, 455, 15, 100);
+    Rwall.color = "white";
+    Rwall.collider = 'static';
+
     // Sensor walls
     // 'nodeCheck', 'sensor', 'Lwall', 'Rwall', 'Bwall'
     // sensor = new Group();
@@ -202,13 +211,8 @@ function gameLoad() {
     // while (sensor.length < 5) {
     //     let
     // }
-    
-    Lwall = new Sprite (425, 455, 15, 100);
-    Lwall.color = "white";
-    Lwall.collider = 'static';
-    Rwall = new Sprite (475, 455, 15, 100);
-    Rwall.color = "white";
-    Rwall.collider = 'static';
+
+    // -------------------- //
 
     platform1 = new Sprite (12, 250, 500, 12);
     platform1.color = 'white';
@@ -232,28 +236,11 @@ function gameLoad() {
     borderR1.color = 'white';
     borderR1.collider = 'static'
 
-    
-
-    // Top border
-    // let borderT = new Sprite(0, 0, borderWidth, 12);
-    // borderT.color = 'white';
-    // borderT.collider = 'static'
-
     // // Bottom border 1
     let borderB1 = new Sprite(0, 500, borderWidth, 12);
     borderB1.color = 'white';
     borderB1.collider = 'static'
 
-    // // Bottom border 2
-    // let borderB2 = new Sprite(0, 750, borderWidth, 12);
-    // borderB2.color = 'white';
-    // borderB2.collider = 'static';
-
-    // this sprite can be created on a single line, but it's easier to read this way:
-	// spinningShape = new Sprite();
-	// spinningShape.width = canvas.width/5;
-	// spinningShape.height = spinningShape.width;
-    // spinningShape.collider = "kinematic";
 }
 
 // ---------------------------------------- //
