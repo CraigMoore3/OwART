@@ -20,7 +20,7 @@ let width = 1914;
 let height = 1074;
 let borderWidth = width*2;
 let borderHeight = height*2;
-let playerNodes;
+let playerNodes, activeNode;
 // let imgLoc = (575, 65, 350, 350);
 
 // ---------------------------------------- //
@@ -87,17 +87,7 @@ function draw() {
     else {mouse.cursor = 'default';}
 
 
-    // deNoise Button
-    if (deNoiseBtn.mouse.pressing() > 1 && deNoiseBtn.mouse.pressing() < 3 && activate) {
-        presses++;
-        deNoiseBtn.x = 750;
-        deNoiseBtn.y = 450;
-        deNoiseBtn.color = 'maroon';
-    } else {
-        deNoiseBtn.x = 752; 
-        deNoiseBtn.y = 448; 
-        deNoiseBtn.color = 'red';
-    }
+    
 
 
     // Mouse Interaction
@@ -112,45 +102,39 @@ function draw() {
    
 
     for (let i = 0; i < playerNodes.length; i++) {
-    //   const activeNode = playerNodes[i];
-        text(activeNode, 50, 175);
-        if (activate && presses < 1) {
-                image(playerNodes[3].pics[0], 575, 65, 350, 350);
-          } if (activate && presses == 1) {
-              image(playerNodes[3].pics[1],575, 65, 350, 350);
-          } if (activate && presses >= 2) {
-              image(playerNodes[3].pics[2],575, 65, 350, 350);
-          }
 
-          if (playerNodes.overlapping(nodeCheck) > 3) {
-            activate = true;
+          if (playerNodes[i].overlapping(nodeCheck) > 3) {
             
+            activeNode = playerNodes[i];
+            text(i, 50, 175);
             console.log("overlapping");
-        } else { 
-            activate = false;
-            presses = 0;
-        }
-
+        } 
+        
+        if (activate && presses < 1) {
+            image(activeNode.pics[0], 575, 65, 350, 350);
+      } if (activate && presses == 1) {
+          image(activeNode.pics[1],575, 65, 350, 350);
+      } if (activate && presses >= 2) {
+          image(activeNode.pics[2],575, 65, 350, 350);
+      }
     }
 
-    
+    if (playerNodes.overlapping(nodeCheck) >3) {
+        activate = true;
+    } else {activate = false; presses = 0;}
+   
+    // deNoise Button
+    if (deNoiseBtn.mouse.pressing() > 1 && deNoiseBtn.mouse.pressing() < 3 && activate) {
+        presses++;
+        deNoiseBtn.x = 750;
+        deNoiseBtn.y = 450;
+        deNoiseBtn.color = 'maroon';
+    } else {
+        deNoiseBtn.x = 752; 
+        deNoiseBtn.y = 448; 
+        deNoiseBtn.color = 'red';
+    }
 
-    
-
-
-
-    // ----------------------- //
-        // for (let i = 0; i < otherNodes.length; i++) {
-        //     const otherNode = otherNodes[i];
-        // }
-
-        // if (otherNode.mouse.dragging()) {
-        //     otherNode.moveTowards(mouse.x + otherNode.mouse.x, mouse.y + otherNode.mouse.y, 1);
-        // }
-    // ----------------------- //
-
-    
-    
     // if (playerNodes.mouse.dragging()) {
     //     playerNodes.moveTowards(mouse.x + playerNodes.mouse.x, mouse.y + playerNodes.mouse.y);
     // }
