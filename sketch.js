@@ -20,6 +20,8 @@ let width = 1914;
 let height = 1074;
 let borderWidth = width*2;
 let borderHeight = height*2;
+let junkNodes, incinerator;
+let countdown = 3;
 let playerNodes, activeNode, dataBox, dataBoxB, dataBoxL, dataBoxR, dataBoxT;
 // let imgLoc = (575, 65, 350, 350);
 
@@ -29,14 +31,14 @@ function preload() {
 
     playerNodes = new Group();
     playerNodes.diameter = 25;
-    playerNodes.color = 'blue';
+    playerNodes.color = 'white';
     playerNodes.drag = 5;
     
     for (let i = 0; i < 17; i++) {
         let node = new playerNodes.Sprite();
-        node.x = width/2 + playerNodes.length * 5;
-        node.y = height/2 + playerNodes.length * 2;
-        node.textColor = 'white';
+        node.x = 150 + playerNodes.length * 5;
+        node.y = 400 + playerNodes.length * 2;
+        node.textColor = 'black';
         node.text = playerNodes.length - 1;
         node.pics = [];
         node.pics[0] = loadImage('assets/' + i + '_0.gif');
@@ -44,13 +46,43 @@ function preload() {
         node.pics[2] = loadImage('assets/' + i + '_2.gif');
     }
 
+    junkNodes = new Group();
+    junkNodes.diameter = 25;
+    junkNodes.color = 'silver';
+    junkNodes.text = 'forgotten'
+    junkNodes.drag = 5;
+
+    for (let i = 0; i < 60; i++) {
+        let node = new junkNodes.Sprite();
+        if (i < 20) {
+            node.color = 'lightsilver';
+            node.text = 'incomplete';
+        } if (i >= 20 && i < 39) {
+            node.color = 'darksilver';
+            node.text = 'annihilated';
+        }
+        node.x = 150 + junkNodes.length * 2;
+        node.y = -200 + junkNodes.length * 2;
+        node.textColor = 'black';
+        
+    }
+
     dataBox = new Group();
     dataBox.color = 'white';
     dataBox.collider = 'kinematic';
-    dataBoxL = new dataBox.Sprite(width/2 - 200,height/2, 20, 400);
-    dataBoxR = new dataBox.Sprite(width/2 + 200, height/2, 20, 400);
+    dataBoxL = new dataBox.Sprite(55, 450, 20, 900);
+    dataBoxR = new dataBox.Sprite(375, 550, 20, 700);
+    dataBoxR1 = new dataBox.Sprite(375, 60, 20, 200);
     // dataBoxT = new dataBox.Sprite(width/2, height/2 - 200, 400, 20);
-    dataBoxB = new dataBox.Sprite(width/2, height/2 + 200, 400, 20);
+    dataBoxB = new dataBox.Sprite(215, 900, 340, 20);
+
+    dataBoxPlat01 = new dataBox.Sprite(100, 400, 100, 10);
+    dataBoxPlat02 = new dataBox.Sprite(200, 600, 100, 10);
+
+    dataBoxBridgeB = new dataBox.Sprite(735, 200, 740, 10);
+    dataBoxBridgeT = new dataBox.Sprite(735, 160, 740, 10);
+
+    
 
     lever01 = loadSound('sound/lever_01.mp3');
     lever01.playMode('untilDone');
@@ -65,7 +97,7 @@ function setup() {
     textFont("Courier", 15);
     noStroke();
     gameLoad();
-    world.gravity.y = 10;
+    world.gravity.y = 20;
 }
 
 // ---------------------------------------- //
@@ -76,43 +108,61 @@ function draw() {
     clear();
     background('black');
     fill('white');
-    text('> Old World Analysis and Reconstruction Team', 50, 550);
-    text(presses, 50, 150);
-    text(activate,50, 165);
+    text('> Old World Analysis and Reconstruction Team', 1050, 550);
+    text(presses, 80, 950);
+    text(activate,80, 975);
+    text(frameRate(), 80, 1000);
+    rect(470, 260, 560, 560);
+    fill('black');
+    rect(475, 265, 550, 550);
+    
     
 
     // Mouse Cursor
-    if (playerNodes.mouse.hovering() || deNoiseBtn.mouse.hovering()) mouse.cursor = 'grab';
+    if (playerNodes.mouse.hovering() || deNoiseBtn.mouse.hovering() || junkNodes.mouse.hovering()) mouse.cursor = 'grab';
     else {mouse.cursor = 'default';}
 
+    
+   for (let i = 0; i < junkNodes.length; i++) {
+        let node = junkNodes[i];
 
-    // Mouse Interaction
-    for (let i = 0; i < playerNodes.length; i++) {
-        const node = playerNodes[i];
-        
         if (node.mouse.dragging()) {
             node.moveTowards(mouse.x + node.mouse.x, mouse.y + node.mouse.y, 1);
         }
-    }
-    
-   
+
+        if (node.overlapping(incinerator)){
+            node.remove();
+        }   
+   }
 
     for (let i = 0; i < playerNodes.length; i++) {
+        let node = playerNodes[i];
 
-          if (playerNodes[i].overlapping(nodeCheck) > 3) {
-            
+        if (node.mouse.dragging()) {
+            node.moveTowards(mouse.x + node.mouse.x, mouse.y + node.mouse.y, 1);
+        }
+
+        if (playerNodes[i].overlapping(nodeCheck) > 3) {
             activeNode = playerNodes[i];
             text(i, 50, 175);
             console.log("overlapping");
         } 
         
         if (activate && presses < 1) {
-            image(activeNode.pics[0], 575, 65, 350, 350);
+          image(activeNode.pics[0], 475, 265, 550, 550);
       } if (activate && presses == 1) {
-          image(activeNode.pics[1],575, 65, 350, 350);
+          image(activeNode.pics[1],475, 265, 550, 550);
+          activeNode.color = 'blue';
+          activeNode.diameter = 35;
       } if (activate && presses >= 2) {
-          image(activeNode.pics[2],575, 65, 350, 350);
+          image(activeNode.pics[2],475, 265, 550, 550);
+          activeNode.color = 'green';
       }
+
+      if (node.overlapping(incinerator)){
+        node.remove();
+      }
+
     }
 
     if (playerNodes.overlapping(nodeCheck) >3) {
@@ -125,11 +175,11 @@ function draw() {
     if (deNoiseBtn.mouse.pressing() > 1 && deNoiseBtn.mouse.pressing() < 3 && activate) {
         presses++;
         deNoiseBtn.x = 750;
-        deNoiseBtn.y = 450;
+        deNoiseBtn.y = 860;
         deNoiseBtn.color = 'maroon';
     } else {
         deNoiseBtn.x = 752; 
-        deNoiseBtn.y = 448; 
+        deNoiseBtn.y = 858; 
         deNoiseBtn.color = 'red';
     }
 }
@@ -139,57 +189,52 @@ function draw() {
 function gameLoad() {
 //  Capital letter = class
 
+    incinerator = new Sprite(1200, 310);
+    incinerator.width = 100;
+    incinerator.height = 100;
+    incinerator.layer = 1;
+    incinerator.collider = 'none';
+    incinerator.color = 'red';
+
+    spinner = new Sprite(220, 750);
+    spinner.width = 210;
+    spinner.height = 10;
+    spinner.rotationSpeed = 2;
+    spinner.color = 'black';
+    spinner.collider = 'kinematic';
+
     // Red "Sensor" - visual only
-    sensor = new Sprite(450,465);
+    sensor = new Sprite(1450,325);
     sensor.color = 'red';
     sensor.width = 25;
     sensor.height= 50;
     sensor.collider = 'static';
 
     // Invisible collider sprite - the actual sensor
-    nodeCheck = new Sprite(450, 465, 50, 75);
+    nodeCheck = new Sprite(1450, 325, 50, 75);
     nodeCheck.layer = 1;
     nodeCheck.collider = 'none'
     nodeCheck.strokeWeight = 0;
     let empty = color(0,0);
     nodeCheck.color = empty;
     
-    Lwall = new Sprite (425, 455, 15, 100);
+    Lwall = new Sprite (1420, 310, 15, 100);
     Lwall.color = "white";
     Lwall.collider = 'static';
-    Rwall = new Sprite (475, 455, 15, 100);
+    Rwall = new Sprite (1480, 310, 15, 100);
     Rwall.color = "white";
     Rwall.collider = 'static';
     
 
     // -------------------- //
 
-    deNoiseBG = new Sprite(750, 450, 60, 60);
+    deNoiseBG = new Sprite(750, 860, 250, 60);
     deNoiseBG.color = 'white';
     deNoiseBG.collider = 'static';
-    deNoiseBtn = new Sprite(752, 447, 50, 50);
+    deNoiseBtn = new Sprite(752, 857, 240, 50);
     deNoiseBtn.color = 'red';
     deNoiseBtn.collider = 'static';
 
-    // Border for the gamespace
-    // Leftmost border
-    // borderL = new Sprite(0,0,12, borderHeight);
-    // borderL.color = 'white';
-    // borderL.collider = 'static;'
-
-    // // Interior border
-    // borderR1 = new Sprite(500,0,12,1000);
-    // borderR1.color = 'white';
-    // borderR1.collider = 'static'
-
-    // // // Bottom border 1
-    // borderB1 = new Sprite(0, 500, borderWidth, 12);
-    // borderB1.color = 'white';
-    // borderB1.collider = 'static'
-
-    // platform1 = new Sprite (12, 250, 500, 12);
-    // platform1.color = 'white';
-    // platform1.collider = 'static';
 }
 
 // ---------------------------------------- //

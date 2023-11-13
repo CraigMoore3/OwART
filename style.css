@@ -1,9 +1,15 @@
 html, body {
     margin: 0;
     padding: 0;
+    background-color: black;
+    color: white;
   }
   
   canvas {
     display: block;
    border-style: solid;
   }
+
+.link {
+  color: orange;
+}
