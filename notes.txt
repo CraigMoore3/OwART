@@ -28,6 +28,9 @@ Influences:
         Point-and-Drag Gameplay
         Great animation and sound design
 
+Ideas:
+    All images of a particular type must be wiped
+
 
 Array
 

@@ -16,18 +16,21 @@
 let activate, deNoiseBtn;
 let presses = 0;
 let catLoad = false;
+
 let width = 1914;
 let height = 1074;
 let borderWidth = width*2;
 let borderHeight = height*2;
-let junkNodes, incinerator;
-let countdown = 3;
+let junkNodes, incinerator, archive, selectedNode;
+let thumbnail = 0;
 let playerNodes, activeNode, dataBox, dataBoxB, dataBoxL, dataBoxR, dataBoxT;
 // let imgLoc = (575, 65, 350, 350);
 
 // ---------------------------------------- //
 
 function preload() {
+
+    let empty = color(0,0);
 
     playerNodes = new Group();
     playerNodes.diameter = 25;
@@ -73,7 +76,6 @@ function preload() {
     dataBoxL = new dataBox.Sprite(55, 450, 20, 900);
     dataBoxR = new dataBox.Sprite(375, 550, 20, 700);
     dataBoxR1 = new dataBox.Sprite(375, 60, 20, 200);
-    // dataBoxT = new dataBox.Sprite(width/2, height/2 - 200, 400, 20);
     dataBoxB = new dataBox.Sprite(215, 900, 340, 20);
 
     dataBoxPlat01 = new dataBox.Sprite(100, 400, 100, 10);
@@ -82,7 +84,55 @@ function preload() {
     dataBoxBridgeB = new dataBox.Sprite(735, 200, 740, 10);
     dataBoxBridgeT = new dataBox.Sprite(735, 160, 740, 10);
 
+
+    archive = new Group();
+    archive.color = 'white';
+    archive.collider = 'static';
     
+    // x difference = 40
+    small01 = new archive.Sprite(1550, 510, 10, 500);
+    small02 = new archive.Sprite(1590, 510, 10, 500);
+    small03 = new archive.Sprite(1570, 760, 50, 10);
+    smallSensor = new archive.Sprite(1570, 525, 30, 465);
+    smallSensor.collider = 'none';
+    smallSensor.strokeWeight = 0;
+    smallSensor.color= empty;
+    smallSensor.layer = 1;
+
+    // x difference = 50
+    med01 = new archive.Sprite(1660, 560, 10, 600);
+    med02 = new archive.Sprite(1710, 560, 10, 600);
+    med03 = new archive.Sprite(1685, 855, 60, 10);
+    medSensor = new archive.Sprite(1685, 570, 40, 565);
+    medSensor.collider = 'none';
+    medSensor.strokeWeight = 0;
+    medSensor.color = empty;
+    medSensor.layer = 1;
+        
+    // x difference = 60
+    lg01 = new archive.Sprite(1780, 610, 10, 700);
+    lg02 = new archive.Sprite(1840, 610, 10, 700);
+    lg03 = new archive.Sprite(1810, 960, 70, 10);
+    lgSensor = new archive.Sprite(1810, 625, 50, 665);
+    lgSensor.collider = 'none';
+    lgSensor.strokeWeight = 0;
+    lgSensor.color = empty;
+    lgSensor.layer = 1;
+    
+    incinerator = new Sprite(1200, 310);
+    incinerator.width = 100;
+    incinerator.height = 100;
+    incinerator.layer = 1;
+    incinerator.collider = 'none';
+    incinerator.color = 'red';
+
+    trash = new Group();
+    trash.color = 'white';
+    trash.collider = 'static';
+
+    rampL = new trash.Sprite(1131, 229, 85, 10)
+    rampL.layer = -1;
+    rampL.rotation = 45;
 
     lever01 = loadSound('sound/lever_01.mp3');
     lever01.playMode('untilDone');
@@ -112,7 +162,9 @@ function draw() {
     text(presses, 80, 950);
     text(activate,80, 975);
     text(frameRate(), 80, 1000);
+    text(selectedNode,80, 1025);
     rect(470, 260, 560, 560);
+    rect(1145, 255, 110, 110);
     fill('black');
     rect(475, 265, 550, 550);
     
@@ -140,6 +192,7 @@ function draw() {
 
         if (node.mouse.dragging()) {
             node.moveTowards(mouse.x + node.mouse.x, mouse.y + node.mouse.y, 1);
+            selectedNode = node;
         }
 
         if (playerNodes[i].overlapping(nodeCheck) > 3) {
@@ -147,9 +200,14 @@ function draw() {
             text(i, 50, 175);
             console.log("overlapping");
         } 
+
+        if (node.overlapping(smallSensor) > 3) {
+            image(node.pics[1], (i*50) + 200, 900, 55, 55);
+            thumbnail++;
+        }
         
         if (activate && presses < 1) {
-          image(activeNode.pics[0], 475, 265, 550, 550);
+          image(activeNode.pics[0], 475, 265, 550,550);
       } if (activate && presses == 1) {
           image(activeNode.pics[1],475, 265, 550, 550);
           activeNode.color = 'blue';
@@ -157,6 +215,7 @@ function draw() {
       } if (activate && presses >= 2) {
           image(activeNode.pics[2],475, 265, 550, 550);
           activeNode.color = 'green';
+          activeNode.diameter = 45;
       }
 
       if (node.overlapping(incinerator)){
@@ -189,12 +248,7 @@ function draw() {
 function gameLoad() {
 //  Capital letter = class
 
-    incinerator = new Sprite(1200, 310);
-    incinerator.width = 100;
-    incinerator.height = 100;
-    incinerator.layer = 1;
-    incinerator.collider = 'none';
-    incinerator.color = 'red';
+    
 
     spinner = new Sprite(220, 750);
     spinner.width = 210;
@@ -205,7 +259,7 @@ function gameLoad() {
 
     // Red "Sensor" - visual only
     sensor = new Sprite(1450,325);
-    sensor.color = 'red';
+    sensor.color = 'darkorange';
     sensor.width = 25;
     sensor.height= 50;
     sensor.collider = 'static';
@@ -218,10 +272,10 @@ function gameLoad() {
     let empty = color(0,0);
     nodeCheck.color = empty;
     
-    Lwall = new Sprite (1420, 310, 15, 100);
+    Lwall = new Sprite (1415, 310, 15, 100);
     Lwall.color = "white";
     Lwall.collider = 'static';
-    Rwall = new Sprite (1480, 310, 15, 100);
+    Rwall = new Sprite (1485, 310, 15, 100);
     Rwall.color = "white";
     Rwall.collider = 'static';
     
