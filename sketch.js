@@ -10,62 +10,140 @@
 // https://freesound.org/people/A_Kuha/sounds/676412/
 // ---------------------------------------------------
 
-
 // --- Globals ---
-let playerNode01, playerNode02, playerNode03, deNoiseBtn;
 let presses = 0;
 let catLoad = false;
-let width = 1680;
-let height = 1050;
+let width = 1914;
+let height = 1074;
 let borderWidth = width*2;
 let borderHeight = height*2;
+let thumbnail = 0;
+let smCount = 0;
+let mdCount = 0;
+let lgCount = 0;
+let activate, deNoiseBtn, junkNodes, incinerator, archive, selectedNode;
+let playerNodes, activeNode, dataBox, dataBoxB, dataBoxL, dataBoxR, dataBoxT;
 // let imgLoc = (575, 65, 350, 350);
 
 // ---------------------------------------- //
 
 function preload() {
-    fullCat = loadImage('assets/fabCat.png');
-    cat01 = loadImage('assets/fabCat01.gif');
-    cat02 = loadImage('assets/fabCat02.gif');
-    cat03 = loadImage('assets/fabCat03.gif');
-    cat04 = loadImage('assets/fabCat04.gif');
 
-    garage = loadImage('assets/garage.gif');
+    let empty = color(0,0);
+
+    // Player Nodes - Contains Image Data
+    playerNodes = new Group();
+    playerNodes.diameter = 25;
+    playerNodes.color = 'white';
+    playerNodes.drag = 5;
     
-    anhop01 = loadImage('assets/anhop01.gif');
+    for (let i = 0; i < 17; i++) {
+        let node = new playerNodes.Sprite();
+        node.x = 150 + playerNodes.length * 5;
+        node.y = -10 + playerNodes.length * 2;
+        node.textColor = 'black';
+        node.text = playerNodes.length - 1;
+        node.pics = [];
+        node.pics[0] = loadImage('assets/' + i + '_0.gif');
+        node.pics[1] = loadImage('assets/' + i + '_1.gif');
+        node.pics[2] = loadImage('assets/' + i + '_2.gif');
+    }
 
-    bathouse01 = loadImage('assets/bathouse01.gif');
+    // Junk Nodes - Empty
+    junkNodes = new Group();
+    junkNodes.diameter = 25;
+    junkNodes.color = 'silver';
+    junkNodes.text = 'forgotten'
+    junkNodes.drag = 5;
 
-    binoc01 = loadImage('assets/binoc01.gif');
+    for (let i = 0; i < 60; i++) {
+        let node = new junkNodes.Sprite();
+        if (i < 20) {
+            node.color = 'lightsilver';
+            node.text = 'incomplete';
+        } if (i >= 20 && i < 39) {
+            node.color = 'darksilver';
+            node.text = 'annihilated';
+        }
+        node.x = 150 + junkNodes.length * 2;
+        node.y = -200 + junkNodes.length * 2;
+        node.textColor = 'black';
+        
+    }
 
-    books01 = loadImage('assets/books01.gif');
+    // Container for data Nodes
+    dataBox = new Group();
+    dataBox.color = 'white';
+    dataBox.collider = 'kinematic';
+    dataBoxL = new dataBox.Sprite(55, 450, 20, 900);
+    dataBoxR = new dataBox.Sprite(375, 550, 20, 700);
+    dataBoxR1 = new dataBox.Sprite(375, 60, 20, 200);
+    dataBoxB = new dataBox.Sprite(215, 900, 340, 20);
+    dataBoxPlat01 = new dataBox.Sprite(100, 400, 100, 10);
+    dataBoxPlat02 = new dataBox.Sprite(200, 600, 100, 10);
+    dataBoxBridgeB = new dataBox.Sprite(735, 200, 740, 10);
+    dataBoxBridgeT = new dataBox.Sprite(1140, 160, 1550, 10);
 
-    cabin01 = loadImage('assets/cabin01.gif');
+    // Archive Slots
+    archive = new Group();
+    archive.color = 'white';
+    archive.collider = 'static';
+    
+    // Small Node Archive
+    // x difference = 40
+    small01 = new archive.Sprite(1550, 510, 10, 500);
+    small02 = new archive.Sprite(1590, 510, 10, 500);
+    small03 = new archive.Sprite(1570, 760, 50, 10);
+    smallSensor = new archive.Sprite(1570, 525, 30, 465);
+    smallSensor.collider = 'none';
+    smallSensor.strokeWeight = 0;
+    smallSensor.color= empty;
+    smallSensor.layer = 1;
 
-    dome01 = loadImage('assets/dome01.gif');
+    // Medium Node Archive
+    // x difference = 50
+    med01 = new archive.Sprite(1660, 560, 10, 600);
+    med02 = new archive.Sprite(1710, 560, 10, 600);
+    med03 = new archive.Sprite(1685, 855, 60, 10);
+    medSensor = new archive.Sprite(1685, 570, 40, 565);
+    medSensor.collider = 'none';
+    medSensor.strokeWeight = 0;
+    medSensor.color = empty;
+    medSensor.layer = 1;
+        
+    // Large Node Archive
+    // x difference = 60
+    lg01 = new archive.Sprite(1780, 610, 10, 700);
+    lg02 = new archive.Sprite(1840, 610, 10, 700);
+    lg03 = new archive.Sprite(1810, 960, 70, 10);
+    lgSensor = new archive.Sprite(1810, 625, 50, 665);
+    lgSensor.collider = 'none';
+    lgSensor.strokeWeight = 0;
+    lgSensor.color = empty;
+    lgSensor.layer = 1;
+    
+    // Incinerator - Destroys Nodes
+    incinerator = new Sprite(1200, 310);
+    incinerator.width = 100;
+    incinerator.height = 100;
+    incinerator.layer = 1;
+    incinerator.collider = 'none';
+    incinerator.color = 'red';
+    incinerator.text = 'WASTE';
+    incinerator.textColor = 'white';
 
-    eagles01 = loadImage('assets/eagles01.gif');
+    // Borders for incinerator
+    trash = new Group();
+    trash.color = 'white';
+    trash.collider = 'static';
+    rampL = new trash.Sprite(1131, 229, 85, 10)
+    rampL.layer = -1;
+    rampL.rotation = 45;
 
-    fetti01 = loadImage('assets/fetti01.gif');
+    // Messing with sound in the future
+    // lever01 = loadSound('sound/lever_01.mp3');
+    // lever01.playMode('untilDone');
 
-    fish01 = loadImage('assets/fish01.gif');
-
-    kingfisher01 = loadImage('assets/kingfisher01.gif');
-
-    nightDrive01 = loadImage('assets/nightDrive01.gif');
-
-    projx01 = loadImage('assets/projx01.gif');
-
-    river01 = loadImage('assets/river01.gif');
-
-    // runner01 loadImage('assets/runner01.gif');
-
-    takeoff01 = loadImage('assets/takeoff01.gif');
-
-    tarpon01 = loadImage('assets/tarpon01.gif');
-
-    lever01 = loadSound('sound/lever_01.mp3');
-    lever01.playMode('untilDone');
 }
 
 // ---------------------------------------- //
@@ -75,171 +153,179 @@ function setup() {
     textFont("Courier", 15);
     noStroke();
     gameLoad();
-    world.gravity.y = 10;
+    world.gravity.y = 20;
 }
 
 // ---------------------------------------- //
 
 function draw() {
+
+    // Standard p5
     clear();
     background('black');
-    fill('red');
-    rect();
     fill('white');
-    text('> Old World Analysis and Reconstruction Team', 50, 550);
-
-
+    text('> Old World Analysis and Reconstruction Team', 1080, 550);
+    text('> Drive Status : ACTIVE :', 1080, 590);
+    text(': CONSUMER ELECTRONICS :', 1080, 630);
+    text('> Environment : UNSTABLE', 1080, 670);
+    text('> Condition : Depriciated', 1080, 710);
+    text(presses, 80, 950);
+    text(activate,80, 975);
+    text(smCount, 1565, 800);
+    text(mdCount, 1680, 895);
+    text(lgCount, 1805, 995);
+    text(frameRate(), 80, 1000);
+    text(selectedNode,80, 1025);
+    rect(470, 260, 560, 560);
+    rect(1145, 255, 110, 110);
+    fill('black');
+    rect(475, 265, 550, 550);
+    
+    
     // Mouse Cursor
-    if (playerNode01.mouse.hovering() || playerNode02.mouse.hovering() || playerNode03.mouse.hovering() || deNoiseBtn.mouse.hovering()) mouse.cursor = 'grab';
+    if (playerNodes.mouse.hovering() || deNoiseBtn.mouse.hovering() || junkNodes.mouse.hovering()) mouse.cursor = 'grab';
     else {mouse.cursor = 'default';}
-  
 
-    // Data Node 01
-    if (playerNode01.mouse.dragging()) {
-        playerNode01.moveTowards(mouse.x + playerNode01.mouse.x, mouse.y + playerNode01.mouse.y, 1);
-        // lever01.play();
+    // "Junk Nodes" - Nodes that contain no data, cannot be archived
+    for (let i = 0; i < junkNodes.length; i++) {
+        let node = junkNodes[i];
+
+        // Mouse Interaction
+        if (node.mouse.dragging()) {
+            node.moveTowards(mouse.x + node.mouse.x, mouse.y + node.mouse.y, 1);
+        }
+
+        // Delete Nodes
+        if (node.overlapping(incinerator)){
+            node.remove();
+        }
+        
+        // Alerts user that the node is empty
+        if (node.overlapping(nodeCheck) > 3) {
+            fill('white');
+            text('DEPRECIATED : UNABLE TO GENERATE PREVIEW', 570,500);
+        }
+
+        // Blocks user from archiving empty node
+        if (node.overlapping(smallSensor) || node.overlapping(medSensor) || node.overlapping(lgSensor)) {
+            node.remove();
+        }
+   }
+
+    // "Player Nodes" - Nodes containing Images    
+    for (let i = 0; i < playerNodes.length; i++) {
+        let node = playerNodes[i];
+
+        // Mouse Interation
+        if (node.mouse.dragging()) {
+            node.moveTowards(mouse.x + node.mouse.x, mouse.y + node.mouse.y, 1);
+            selectedNode = node;
+        }
+
+        // Checking for overlapping, setting Active Node
+        if (playerNodes[i].overlapping(nodeCheck) > 3) {
+            activeNode = playerNodes[i];
+            text(i, 50, 175);
+            console.log("overlapping");
+        } 
+
+        // Experimenting with a way of displaying thumbnails for archived nodes
+        // if (node.overlapping(smallSensor) > 3) {
+        //     image(node.pics[1], (i*50) + 200, 900, 55, 55);
+        //     thumbnail++;
+        // }
+
+        // Updating Archive Slot readouts 
+        if (node.overlapping(smallSensor) >= 3 && node.overlapping(smallSensor) < 4) {
+            smCount += 1;
+        } if (node.overlapping(medSensor) >= 3 && node.overlapping(medSensor) < 4) {
+            mdCount += 1;
+        } if (node.overlapping(lgSensor) >= 3 && node.overlapping(lgSensor) < 4) {
+            lgCount += 1;
+        }
+        
+        // Displaying images, resizing image and node based on button presses
+        if (activate && presses < 1) {
+          image(activeNode.pics[0], 475, 265, 550,550);
+      } if (activate && presses == 1) {
+          image(activeNode.pics[1],475, 265, 550, 550);
+          activeNode.color = 'pink';
+          activeNode.diameter = 35;
+      } if (activate && presses >= 2) {
+          image(activeNode.pics[2],475, 265, 550, 550);
+          activeNode.color = 'darkRed';
+          activeNode.diameter = 45;
+      }
+
+    // Deletes Nodes
+      if (node.overlapping(incinerator)){
+        node.remove();
+      }
+
     }
 
-
-    if (playerNode01.overlapping(nodeCheck) > 3) {
-        image(cat01,575, 65, 350, 350);
-    } if (playerNode01.overlapping(nodeCheck) > 3 && presses >= 1) {
-        image(cat02,575,65,350,350);
-    } if (playerNode01.overlapping(nodeCheck) > 3 && presses >= 2) {
-        image(cat03,575,65,350,350);
-    } if (playerNode01.overlapping(nodeCheck) > 3 && presses >= 3) {
-        image(cat04,575,65,350,350);
-    }
-
-
-    // Data Node 02
-    if (playerNode02.mouse.dragging()) {
-        playerNode02.moveTowards(mouse.x + playerNode02.mouse.x, mouse.y + playerNode02.mouse.y, 1)
-    }
-    if (playerNode02.overlapping(nodeCheck) > 3) {
-        image(garage,575, 65, 350, 350);
-    }
-
-
-    // Data Node 03
-    if (playerNode03.mouse.dragging()) {
-        playerNode03.moveTowards(mouse.x + playerNode03.mouse.x, mouse.y + playerNode03.mouse.y, 1)
-    }
-    if (playerNode03.overlapping(nodeCheck) > 3) {
-        image(takeoff01, 575, 65, 350, 350)
-    } 
-
-
+    // Populates resize/denoise button
+    if (playerNodes.overlapping(nodeCheck) >3) {
+        activate = true;
+        deNoiseBtn.visible = true;
+        deNoiseBG.visible = true;
+    } else {activate = false; presses = 0; deNoiseBtn.visible = false; deNoiseBG.visible = false;}
+   
     // deNoise Button
-    if (deNoiseBtn.mouse.pressing() > 1 && deNoiseBtn.mouse.pressing() < 3) {
+    if (deNoiseBtn.mouse.pressing() > 1 && deNoiseBtn.mouse.pressing() < 3 && activate) {
         presses++;
         deNoiseBtn.x = 750;
-        deNoiseBtn.y = 450;
+        deNoiseBtn.y = 860;
         deNoiseBtn.color = 'maroon';
-    } else { 
+    } else {
         deNoiseBtn.x = 752; 
-        deNoiseBtn.y = 448; 
+        deNoiseBtn.y = 858; 
         deNoiseBtn.color = 'red';
     }
-
 }
 
 // ---------------------------------------- //
 
 function gameLoad() {
 
-    // Data Node 01 - Fab Cat
-    playerNode01 = new Sprite(350,25,25);
-    playerNode01.color = 'blue';
-    playerNode01.textColor = 'white';
-    playerNode01.text = '01';
-    playerNode01.drag = 3;
-    // playerNode01.layer = 2;
+// Handles sprites not generated in preload()
 
-    // Data Node 02 - Garage
-    playerNode02 = new Sprite(250, 25, 25);
-    playerNode02.color = 'blue';
-    playerNode02.textColor = 'white';
-    playerNode02.text = '02';
-    playerNode02.drag = 3;
-
-    // Data Node 03 - Takeoff
-    playerNode03 = new Sprite(255, 25, 25);
-    playerNode03.color = 'blue';
-    playerNode03.textColor = 'white';
-    playerNode03.text = '03';
-    playerNode03.drag = 3;
+    // "Washing Machine" Spinner in Data Box
+    spinner = new Sprite(220, 750);
+    spinner.width = 210;
+    spinner.height = 10;
+    spinner.rotationSpeed = 2;
+    spinner.color = 'black';
+    spinner.collider = 'kinematic';
 
     // Red "Sensor" - visual only
-    sensor = new Sprite(450,465);
-    sensor.color = 'red';
+    sensor = new Sprite(1400,325);
+    sensor.color = 'darkorange';
     sensor.width = 25;
     sensor.height= 50;
     sensor.collider = 'static';
 
     // Invisible collider sprite - the actual sensor
-    nodeCheck = new Sprite(450, 465, 50, 75);
+    nodeCheck = new Sprite(1400, 325, 50, 75);
     nodeCheck.layer = 1;
     nodeCheck.collider = 'none'
     nodeCheck.strokeWeight = 0;
     let empty = color(0,0);
     nodeCheck.color = empty;
     
-    // Sensor walls
-    Lwall = new Sprite (425, 455, 15, 100);
+    // Walls for the Sensor 
+    Lwall = new Sprite (1365, 310, 15, 100);
     Lwall.color = "white";
     Lwall.collider = 'static';
-    Rwall = new Sprite (475, 455, 15, 100);
+    Rwall = new Sprite (1435, 310, 15, 100);
     Rwall.color = "white";
     Rwall.collider = 'static';
-
-    platform1 = new Sprite (12, 250, 500, 12);
-    platform1.color = 'white';
-    platform1.collider = 'static';
-
-    deNoiseBG = new Sprite(750, 450, 60, 60);
+    
+    // DeNoise/Resize button
+    deNoiseBG = new Sprite(750, 860, 250, 60);
     deNoiseBG.color = 'white';
     deNoiseBG.collider = 'static';
-    deNoiseBtn = new Sprite(752, 447, 50, 50);
+    deNoiseBtn = new Sprite(752, 857, 240, 50);
     deNoiseBtn.color = 'red';
     deNoiseBtn.collider = 'static';
-
-    // Border for the gamespace
-    // Leftmost border
-    let borderL = new Sprite(0,0,12, borderHeight);
-    borderL.color = 'white';
-    borderL.collider = 'static;'
-
-    // Interior border
-    let borderR1 = new Sprite(500,0,12,1000);
-    borderR1.color = 'white';
-    borderR1.collider = 'static'
-
-    // Rightmost border
-    let borderR2 = new Sprite (width, 0, 12, borderHeight);
-    borderR2.color = 'white';
-    borderR2.collider = 'static'
-
-    // Top border
-    let borderT = new Sprite(0, 0, borderWidth, 12);
-    borderT.color = 'white';
-    borderT.collider = 'static'
-
-    // Bottom border 1
-    let borderB1 = new Sprite(0, 500, borderWidth, 12);
-    borderB1.color = 'white';
-    borderB1.collider = 'static'
-
-    // Bottom border 2
-    let borderB2 = new Sprite(0, 750, borderWidth, 12);
-    borderB2.color = 'white';
-    borderB2.collider = 'static';
-
-    // this sprite can be created on a single line, but it's easier to read this way:
-	// spinningShape = new Sprite();
-	// spinningShape.width = canvas.width/5;
-	// spinningShape.height = spinningShape.width;
-    // spinningShape.collider = "kinematic";
 }
-
-// ---------------------------------------- //
