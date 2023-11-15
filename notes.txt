@@ -27,3 +27,105 @@ Influences:
         Emotional Interface
         Point-and-Drag Gameplay
         Great animation and sound design
+
+Ideas:
+    All images of a particular type must be wiped
+
+
+Array
+
+    let img0 = new Array [
+        anhop00,
+        anhop01,
+        anhop02
+    ]
+
+    for (let i = 0; i < img0.length; i++) {
+        const img = img0[i];
+    }
+
+playerNode00 -  Animal Hospital
+                0_0.gif
+                0_1.gif
+                0_2.gif
+
+01 -            Bat House
+                1_0.gif
+                1_1.gif
+
+
+02 -            Binoculars
+                Img 06
+                Img 07
+                Img 08
+ 
+03 -            Bookstore
+                Img09
+                Img10
+                Img11
+
+04 -            Cabin
+                Img12
+                Img13
+                Img14
+
+05 -            Clingman's Dome
+                Img15
+                Img16
+                Img17
+
+06 -            Eagles
+                Img18
+                Img19
+                Img20
+
+07 -            Fab cat
+                Img21
+                Img22
+                Img23
+
+08 -            Confetti
+                Img24
+                Img25
+                Img26
+
+09 -            Fish
+                Img27
+                Img28
+                Img29
+
+
+10 -            Kingfisher
+                Img33
+                Img34
+                Img35
+
+11 -            Mom Driving
+                Img37
+                Img38
+                Img39
+
+12 -            Project X Building
+                Img40
+                Img41
+                Img42
+
+13 -            River
+                Img43
+                Img44
+                Img45
+
+14 -            Runners
+                Img46
+                Img47
+                Img48
+
+15 -            Takeoff
+                Img49
+                Img50
+                Img51
+
+16 -            Tarpon Springs
+                Img52
+                Img53
+                Img54
