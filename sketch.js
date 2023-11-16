@@ -168,7 +168,7 @@ function draw() {
     text('> Drive Status : ACTIVE :', 1080, 590);
     text(': CONSUMER ELECTRONICS :', 1080, 630);
     text('> Environment : UNSTABLE', 1080, 670);
-    text('> Condition : Depriciated', 1080, 710);
+    text('> Condition : Depreciated', 1080, 710);
     text(presses, 80, 950);
     text(activate,80, 975);
     text(smCount, 1565, 800);
